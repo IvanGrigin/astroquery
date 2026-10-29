@@ -202,7 +202,7 @@ casda
 
 - Fix ``query_region`` failing for positions with a declination (or right
   ascension) close to zero, where the coordinates were sent in exponent
-  notation that the service rejects. [#3376]
+  notation that the service rejects. [#3697]
 
 
 mast
