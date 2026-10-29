@@ -269,6 +269,18 @@ def test_query_region_near_zero_dec(dec):
     assert isclose(float(circle.split()[2]), centre.transform_to('fk5').dec.deg, abs_tol=1e-9)
 
 
+def test_parse_result_reports_service_error(caplog):
+    # an error VOTable has no table; this used to raise TypeError in the log call
+    content = (b'<?xml version="1.0"?><VOTABLE version="1.3" '
+               b'xmlns="http://www.ivoa.net/xml/VOTable/v1.3"><RESOURCE type="results">'
+               b'<INFO name="QUERY_STATUS" value="ERROR">UsageFault: Invalid POS value</INFO>'
+               b'</RESOURCE></VOTABLE>')
+    response = MockResponse(content)
+    with caplog.at_level('INFO'):
+        assert Casda._parse_result(response) is response
+    assert 'Failed to convert query result to table' in caplog.text
+
+
 def test_query_region_async_box(patch_get):
     ra = 333.9092
     dec = -45.8418
